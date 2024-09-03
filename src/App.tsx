@@ -1,26 +1,39 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect } from "react";
+import Config from "./components/WeatherConfig";
+
+import "./App.css";
+import Weather from "./components/Weather";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+  const searchParams = new URLSearchParams(window.location.search);
+  const krakenParam = searchParams.get("kraken");
+  const [isKraken, setIsKraken] = React.useState(false);
+
+  useEffect(() => {
+    if (krakenParam && krakenParam === "1") {
+      setIsKraken(true);
+    }
+  }, [krakenParam]);
+
+
+  if (isKraken) {
+    return (
+      <div className="App">
+        <Weather />
+      </div>
+    );
+  }
+  else{
+    return (
+      <div className="App">
+        <Config />
+        <hr/>
+        <div className="preview">
+          <Weather />
+        </div>
+      </div>
+    );
+  }
 }
 
 export default App;

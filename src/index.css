@@ -1,3 +1,13 @@
+html{
+  box-sizing: border-box;
+  height: 100%;
+  width:100%;
+}
+#root{
+  box-sizing: border-box;
+  height: 100%;
+  width:100%;
+}
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -5,9 +15,176 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  box-sizing: border-box;
+  height: 100%;
+  width:100%;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+.App{
+  min-height: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: auto;
+}
+
+.weatherContainer{
+  display: flex;
+  height: 100%;
+  width:  100%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+.container{
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width:100%;
+  padding: 10%;
+  height: 100%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.row{
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+  width:100%;
+  height: 33%;
+  overflow: hidden;
+  max-height: 33%;
+  align-items: center;
+  padding: 0;
+}
+.column{
+  padding: 0;
+  width:50%;
+}
+.background{
+  padding: 0;
+  top: 0;
+  left: 0;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  background-color:skyblue;
+  padding: 10px;
+}
+.tempTitle{
+
+  padding: 0;
+  font-size: 4em;
+  font-weight: bold;
+}
+.tempReading{
+  font-weight: bold;
+  padding: 0;
+  font-size: 5em;
+}
+.locationName{
+
+  padding: 0;
+  font-weight: bold;
+  font-size: 2.5em;
+  width:400px;
+}
+.searchResults tr{
+  cursor: pointer;
+}
+.searchResults tr:hover{
+  background-color: rgb(161, 250, 188);
+}
+.searchResults{
+  border-spacing: 0;
+  border-collapse: collapse;
+  width:100%;
+}
+.searchResults th{
+  background-color: rgb(32, 66, 255);
+  color: white;
+  padding: 5px;;
+}
+
+.preview{
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width:640px;
+  height: 640px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 20px solid  black;
+}
+.windArrow{
+  mask-image: url("./Assets/wind.png");
+  height: 5em;
+  width: 5em;
+  mask-repeat: no-repeat;
+  mask-size: contain;
+  mask-position: center;
+  background-color: rgb(137, 47, 255);
+}
+.windContainer{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  gap: 10px;
+}
+.windDetails{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  box-sizing: border-box;
+  font-size: 3em;
+  font-weight: bold;
+}
+
+.config{
+  width:600px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+}
+.configRow{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin: 10px;
+  gap: 10px;
+}
+.configLabel{
+  width:150px;
+  align-self: center;
+  font-weight: bold;
+}
+.configValue{
+  width:50%;
+  flex-grow: 1;
+  text-align: left;
+}
+.configButton{
+  width: 100px;
 }
