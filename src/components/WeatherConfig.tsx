@@ -8,7 +8,6 @@ function Config() {
    const [currentInput, setCurrentInput] = useState('');
    const [colour,setColour] = useState('black');
    const [staticImages,setStaticImages] = useState(false);
-   const [tempertureDisplay,setTempertureDisplay] = useState<Number>(0);
    const config = useConfig();
 
    const saveLatLng = (result: SearchResult) => {
@@ -26,7 +25,6 @@ function Config() {
     setColour(config.textColour);
     setSearchQuery(initialValue);
     setStaticImages(config.staticImages);
-    setTempertureDisplay(config.tempertureDisplay);
    }, [config])
    const updateColour = () => {
          localStorage.setItem('textColour',colour);
@@ -38,7 +36,6 @@ function Config() {
         window.dispatchEvent(new Event("configChanged"));
    }
    const updateTempertureDisplay = (e:React.ChangeEvent<HTMLInputElement>) => {
-        setTempertureDisplay(Number(e.target.value));
         localStorage.setItem('tempertureDisplay',e.target.value);
         window.dispatchEvent(new Event("configChanged"));
    }
