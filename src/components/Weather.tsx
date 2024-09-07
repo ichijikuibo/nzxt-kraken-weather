@@ -3,83 +3,159 @@ import { useGetWeather } from "../hooks/useGetWeather";
 
 import { MonitoringData } from "@nzxt/web-integrations-types/v1";
 import { useConfig } from "../hooks/useConfig";
-import Lottie from "react-lottie";
+import { LottieOptions, useLottie } from "lottie-react";
+import { weatherMap } from "../Data/weathercodes";
+
+
 
 function Weather() {
-  const [cpuTemp, setcpuTemp] = React.useState(0);
+  const [cpuTemp, setCpuTemp] = React.useState(0);
+  const [gpuTemp, setGpuTemp] = React.useState(0);
+  const [liquidTemp, setLiquidTemp] = React.useState(0);
   const [weatherData] = useGetWeather();
   const [windDirection, setWindDirection] = React.useState(0);
-  const [isStopped,setIsStopped] =  React.useState(false);
-  const [imageOptions, setImageOptions] = React.useState({loop: true,
+  const [weatherDescription, setWeatherDescription] = React.useState("Sunny");
+  const [imageOptions, setImageOptions] = React.useState<LottieOptions>({
+    loop: true,
     autoplay: true,
     animationData: null,
     rendererSettings: {
-      preserveAspectRatio: "xMidYMid slice"
-    }
+      preserveAspectRatio: "xMidYMid slice",
+      hideOnTransparent: true,
+    },
   });
   const config = useConfig();
-
-
-
+  const { View } = useLottie(imageOptions);
 
   useEffect(() => {
     if (weatherData!) {
       setWindDirection(weatherData.current.windDirection);
-      setIsStopped(config.staticImages);
+      if (weatherData.current.weatherCode in weatherMap) {
+        if (weatherData.current.isDay) {
+          setWeatherDescription(
+            weatherMap[weatherData.current.weatherCode].day.text
+          );
+        } else {
+          setWeatherDescription(
+            weatherMap[weatherData.current.weatherCode].night.text
+          );
+        }
+      }
+      var file = require(`../Assets/animations/Day/1.json`);
+      try {
+        if (weatherData.current.isDay)
+          file = require(`../Assets/animations/${
+            weatherMap[weatherData.current.weatherCode].day.icon
+          }`);
+        else
+          file = require(`../Assets/animations/${
+            weatherMap[weatherData.current.weatherCode].night.icon
+          }`);
+      } catch (e) {
+        if (weatherData.current.isDay)
+          file = require(`../Assets/animations/Day/1.json`);
+        else file = require(`../Assets/animations/Night/1.json`);
+      }
       setImageOptions({
         loop: config.staticImages ? false : true,
         autoplay: config.staticImages ? false : true,
-        animationData:require(`../Assets/animations/${weatherData.current.isDay?'Day':'Night'}/${weatherData.current.weatherCode}.json`),
+        animationData: file,
         rendererSettings: {
-          preserveAspectRatio: "xMidYMid slice"
-        }
+          preserveAspectRatio: "xMidYMid slice",
+          hideOnTransparent: true,
+        },
       });
     }
-  }, [weatherData,config]);
+  }, [weatherData, config]);
 
+  const getTempertureDisplay = () => {  
+    if(config.tempertureDisplay === 0){
+      return(
+        <div className="column">
+          <div className="tempTitle">CPU</div>
+          <div className="tempReading">{cpuTemp}°C</div>
+        </div>
+      )
+    }
+    if(config.tempertureDisplay === 1){
+      return(
+        <div className="column">
+          <div className="tempTitle">GPU</div>
+          <div className="tempReading">{gpuTemp}°C</div>
+        </div>
+      )
+    }
+    if(config.tempertureDisplay === 2){
+      return(
+        <div className="column">
+          <div className="tempTitle">Liquid</div>
+          <div className="tempReading">{liquidTemp}°C</div>
+        </div>
+      )
+    }
+  }
 
   window.nzxt = {
     v1: {
       onMonitoringDataUpdate: (data) => {
-        const { cpus }:MonitoringData = data;
+        const { cpus,gpus,kraken }: MonitoringData = data;        
         if (cpus.length > 0) {
-          console.log("CPUs", cpus);
           let cpu = cpus[0];
-          setcpuTemp(cpu.temperature ? Math.round(cpu.temperature) : 0);
+          setCpuTemp(cpu.temperature ? Math.round(cpu.temperature) : 0);
+        }
+        if (gpus.length > 0) {
+          let gpu = gpus[0];
+          const nvidiaGpus = gpus.filter((gpu) => gpu.name.includes("NVIDIA"));
+          const amdGpus = gpus.filter((gpu) => gpu.name.includes("AMD"));
+          const intelGpus = gpus.filter((gpu) => gpu.name.includes("Intel"));
+          setGpuTemp(gpu.temperature ? Math.round(gpu.temperature) : 0);
+          if(nvidiaGpus.length > 0){
+            setGpuTemp(nvidiaGpus[0].temperature ? Math.round(nvidiaGpus[0].temperature) : 0);
+          }
+          else if(amdGpus.length > 0){
+            setGpuTemp(amdGpus[0].temperature ? Math.round(amdGpus[0].temperature) : 0);
+          }
+          else if(intelGpus.length > 0){
+            setGpuTemp(intelGpus[0].temperature ? Math.round(intelGpus[0].temperature) : 0);
+          }
+          
+        }
+
+        if (kraken) {
+          setLiquidTemp(kraken.liquidTemperature ? Math.round(kraken.liquidTemperature) : 0);
         }
       },
-      width: 600,
-      height: 600,
+      width: 640,
+      height: 640,
       shape: "circle",
-      targetFps: 60,
+      targetFps: 15,
     },
   };
   return (
-    <div className="weatherContainer" style={{color:config.textColour}}>
-      <div className="background" style={{backgroundColor: weatherData?.current.isDay?'skyblue':'#222222'}}>    <Lottie 
-        options={imageOptions}
-        height={600}
-        width={600}
-        isStopped={isStopped}
-      />
-    </div>
+    <div className="weatherContainer" style={{ color: config.textColour }}>
+      <div
+        className="background"
+        style={{
+          backgroundColor: weatherData?.current.isDay ? "skyblue" : "#222222",
+        }}
+      >
+        <div>{View}</div>
+      </div>
       <div className="container">
         <div className="row">
-          <p className="locationName">
-            {config.name}, {config.country}
-          </p>
+          <div className="header">
+            <div className="locationName">{config.name}</div>
+            <div className="weatherDescription">{weatherDescription}</div>
+          </div>
         </div>
-        <div className="row">
+        <div className="row" style={{flexGrow:1}}>
           <div className="column">
             <div className="tempTitle">Outside</div>
             <div className="tempReading">
               {Math.round(weatherData ? weatherData?.current.temperature : 0)}°C
             </div>
           </div>
-          <div className="column">
-            <div className="tempTitle">CPU</div>
-            <div className="tempReading">{cpuTemp}°C</div>
-          </div>
+          {getTempertureDisplay()}  
         </div>
         <div className="row">
           <div className="windContainer">
@@ -92,7 +168,10 @@ function Weather() {
             </div>
             <div
               className="windArrow"
-              style={{ transform: "rotate(" + windDirection + "deg)", backgroundColor:config.textColour }}
+              style={{
+                transform: "rotate(" + windDirection + "deg)",
+                backgroundColor: config.textColour,
+              }}
             ></div>
           </div>
         </div>

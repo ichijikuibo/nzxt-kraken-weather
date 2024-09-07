@@ -8,6 +8,7 @@ function Config() {
    const [currentInput, setCurrentInput] = useState('');
    const [colour,setColour] = useState('black');
    const [staticImages,setStaticImages] = useState(false);
+   const [tempertureDisplay,setTempertureDisplay] = useState<Number>(0);
    const config = useConfig();
 
    const saveLatLng = (result: SearchResult) => {
@@ -25,6 +26,7 @@ function Config() {
     setColour(config.textColour);
     setSearchQuery(initialValue);
     setStaticImages(config.staticImages);
+    setTempertureDisplay(config.tempertureDisplay);
    }, [config])
    const updateColour = () => {
          localStorage.setItem('textColour',colour);
@@ -33,6 +35,11 @@ function Config() {
    const updateStaticImages = (e:React.ChangeEvent<HTMLInputElement>) => {
         setStaticImages(e.target.checked);
         localStorage.setItem('staticImages',e.target.checked.toString());
+        window.dispatchEvent(new Event("configChanged"));
+   }
+   const updateTempertureDisplay = (e:React.ChangeEvent<HTMLInputElement>) => {
+        setTempertureDisplay(Number(e.target.value));
+        localStorage.setItem('tempertureDisplay',e.target.value);
         window.dispatchEvent(new Event("configChanged"));
    }
 
@@ -48,6 +55,18 @@ function Config() {
                 <div className='configLabel'>Static Images:</div>
                 <input className='' type='checkbox' checked={staticImages} onChange={updateStaticImages} />
             </div>
+            <div className="configRow">
+                <div className="configLabel">Temperture Display:</div>
+                <div className="configValue">
+                    <label htmlFor="CPU">CPU</label>
+                    <input type="radio" id="CPU" name="tempertureDisplay" value="0" checked={config.tempertureDisplay === 0} onChange={updateTempertureDisplay}></input>
+                    <label htmlFor="GPU">GPU</label>
+                    <input type="radio" id="GPU" name="tempertureDisplay" value="1" checked={config.tempertureDisplay === 1} onChange={updateTempertureDisplay}></input>
+                    <label htmlFor='Liquid'>Liquid</label>
+                    <input type='radio' id='Liquid' name='tempertureDisplay' value='2' checked={config.tempertureDisplay === 2} onChange={updateTempertureDisplay}></input>
+                 </div>
+
+            </div>
             <div className='configRow'>
                 <div className='configLabel'>Current Location:</div>
                 <div className='configValue'>{config.name}, {config.country}</div>
@@ -57,7 +76,7 @@ function Config() {
                 <input className='configValue' type='text' value={currentInput} onChange={(e)=>setCurrentInput(e.target.value)}></input> 
                 <button className='configButton' onClick={()=>setSearchQuery(currentInput)}>Search</button>
             </div>
-            
+
             <SearchResults searchQuery={searchQuery} resultSelcted={saveLatLng}></SearchResults>
         </div>
       );

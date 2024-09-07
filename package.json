@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
+    "@dotlottie/react-player": "^1.6.19",
     "@nzxt/web-integrations-types": "^0.4.0",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
@@ -11,6 +12,9 @@
     "@types/node": "^16.18.105",
     "@types/react": "^18.3.4",
     "@types/react-dom": "^18.3.0",
+    "lottie-react": "^2.4.0",
+    "lottie-react-native": "^6.7.2",
+    "lottie-web": "^5.12.2",
     "openmeteo": "^1.1.4",
     "prop-types": "^15.8.1",
     "react": "^18.3.1",

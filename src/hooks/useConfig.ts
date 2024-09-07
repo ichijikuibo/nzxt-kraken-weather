@@ -9,7 +9,8 @@ export function useConfig(): ConfigModel {
         name: 'Derry',
         country: 'United Kingdom',
         textColour: 'red',
-        staticImages: false
+        staticImages: false,
+        tempertureDisplay: 0
     });
     useEffect(() => {
         const lat = Number(localStorage.getItem('lat')|| 54.99904128072734);
@@ -18,7 +19,8 @@ export function useConfig(): ConfigModel {
         const country = localStorage.getItem('country') || 'United Kingdom';
         const textColour = localStorage.getItem('textColour') || 'red';
         const staticImages = localStorage.getItem('staticImages') === 'true';
-        setConfig({lat,lng,name,country,textColour,staticImages});
+        const tempertureDisplay = Number(localStorage.getItem('tempertureDisplay') || 0);
+        setConfig({lat,lng,name,country,textColour,staticImages,tempertureDisplay});
     },[]);
     window.addEventListener("storage", (event) => {
         if(event.key === 'lat' || event.key === 'lng' || event.key === 'name' || event.key === 'country'){
@@ -36,6 +38,10 @@ export function useConfig(): ConfigModel {
             const staticImages = localStorage.getItem('staticImages') === 'true';
             setConfig({...config,staticImages});
         }
+        if(event.key === 'tempertureDisplay'){
+            const tempertureDisplay = Number(localStorage.getItem('tempertureDisplay') || 0);
+            setConfig({...config,tempertureDisplay});
+        }
       });
     window.addEventListener("configChanged", () => {
         const lat = Number(localStorage.getItem('lat'))|| 54.99904128072734;
@@ -44,7 +50,8 @@ export function useConfig(): ConfigModel {
         const country = localStorage.getItem('country') || 'United Kingdom';
         const textColour = localStorage.getItem('textColour') || '#FF0000';
         const staticImages = localStorage.getItem('staticImages') === 'true';
-        setConfig({lat,lng,name,country,textColour,staticImages});
+        const tempertureDisplay = Number(localStorage.getItem('tempertureDisplay') || 0);
+        setConfig({lat,lng,name,country,textColour,staticImages,tempertureDisplay});
     });
 
     return config;

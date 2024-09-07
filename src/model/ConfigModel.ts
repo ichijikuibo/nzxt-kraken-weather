@@ -5,4 +5,5 @@ export interface ConfigModel {
     country: string;
     textColour: string;
     staticImages: boolean;
+    tempertureDisplay: Number;
 }
