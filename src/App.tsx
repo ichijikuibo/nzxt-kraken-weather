@@ -31,6 +31,9 @@ function App() {
         <div className="preview">
           <Weather />
         </div>
+        <div className='configRow'>
+                 <a href="https://open-meteo.com/">Weather data by Open-Meteo.com</a>
+            </div>
       </div>
     );
   }
